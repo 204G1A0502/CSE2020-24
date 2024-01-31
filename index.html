@@ -1,0 +1,149 @@
+<!--&lt;!&ndash; templates/index.html &ndash;&gt;-->
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>Product Review Analysis</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: 'Arial', sans-serif;-->
+<!--            background-color: #f5f5f5;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--        }-->
+
+<!--        h1 {-->
+<!--            color: #333;-->
+<!--        }-->
+
+<!--        form {-->
+<!--            max-width: 500px;-->
+<!--            margin: 20px auto;-->
+<!--            background-color: #fff;-->
+<!--            padding: 20px;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
+
+<!--        label {-->
+<!--            display: block;-->
+<!--            margin-bottom: 8px;-->
+<!--            color: #333;-->
+<!--        }-->
+
+<!--        select,-->
+<!--        textarea {-->
+<!--            width: 100%;-->
+<!--            padding: 10px;-->
+<!--            margin-bottom: 16px;-->
+<!--            border: 1px solid #ddd;-->
+<!--            border-radius: 4px;-->
+<!--            box-sizing: border-box;-->
+<!--        }-->
+
+<!--        input[type="submit"] {-->
+<!--            background-color: #4caf50;-->
+<!--            color: #fff;-->
+<!--            padding: 10px 20px;-->
+<!--            border: none;-->
+<!--            border-radius: 4px;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        input[type="submit"]:hover {-->
+<!--            background-color: #45a049;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h1>Product Review Analysis</h1>-->
+<!--    <form action="/analyze" method="post">-->
+<!--        <label for="product">Select a product:</label>-->
+<!--        <select id="product" name="product">-->
+<!--            <option value="product1">shoe</option>-->
+<!--            <option value="product2">belt</option>-->
+<!--            <option value="product3">watch</option>-->
+<!--            <option value="product4">book</option>-->
+<!--            <option value="product5">face cream</option>-->
+<!--            <option value="product6">food</option>-->
+<!--            <option value="product7">chappal</option>-->
+<!--            <option value="product8">mobiles</option>-->
+<!--            <option value="product9">laptops</option>-->
+<!--            &lt;!&ndash; Add more products as needed &ndash;&gt;-->
+<!--        </select><br>-->
+<!--        <label for="review">Enter your product review:</label><br>-->
+<!--        <textarea id="review" name="review" rows="4" cols="50"></textarea><br>-->
+<!--        <input type="submit" value="Submit">-->
+<!--    </form>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Review Analysis</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Product Review Analysis</h1>
+        <form action="/analyze" method="post" onsubmit="updateProductId()">
+            <div class="form-group">
+                <label for="product">Select a product:</label>
+                <select class="form-control" id="product" name="product">
+                    {% for product in pd %}
+                        <option value="{{ product['id'] }}">{{ product['id'] }}</option>
+
+                    {% endfor %}
+                </select>
+            </div>
+<div class="form-group">
+        <input type="hidden" id="selectedProductId" name="id" value="{{ pd[0]['id'] }}">
+    </div>
+            <div class="form-group">
+        <label for="review">Enter your product review:</label>
+        <textarea class="form-control" id="review" name="review" rows="4" required></textarea>
+    </div>
+<!--             <input type="hidden" name="id" value="{{ pd['id'] }}">-->
+    <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+<script>
+    function updateProductId() {
+        var selectedProduct = document.getElementById('product');
+        var selectedProductId = selectedProduct.options[selectedProduct.selectedIndex].value;
+        document.getElementById('selectedProductId').value = selectedProductId;
+    }
+</script>
+
+    <div class="container mt-5">
+        <h2 class="mb-4">All Products</h2>
+        <div class="row">
+    {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <!-- Use url_for to generate the correct image URL -->
+                <img src="{{ url_for('static', filename=product['image']) }}" class="card-img-top" alt="{{ product['name'] }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product['name'] }}</h5>
+                    <p class="card-text">{{ product['description'] }}</p>
+                    <p class="card-text">Product ID: {{ product['id'] }}</p>
+                    <!-- Add a button to set the product ID and trigger the form submission -->
+<!--                    <button class="btn btn-primary" onclick="setProductId('{{ product['id'] }}')">Write a Review</button>-->
+                </div>
+            </div>
+        </div>
+
+        {% if loop.index % 3 == 0 %}
+            </div><div class="row">
+        {% endif %}
+    {% endfor %}
+</div>
+    </div>
+</body>
+</html>
